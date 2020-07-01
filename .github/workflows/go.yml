@@ -1,0 +1,49 @@
+name: Go
+
+on: push
+
+env:
+  # rewrite go env GOCACHE to something well known so we can use actions/cache with it
+  GOCACHE: "/home/runner/go/cache"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.14
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.14
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/go/src
+          /hone/runner/go/cache
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+          
+    - name: Print Go Version
+      run: go version
+
+    - name: Build
+      run: go build -mod=readonly -v .
+
+    - name: Install forge CLI
+      run: |
+        wget https://github.com/stormforger/cli/releases/download/v0.38.0/forge_v0.38.0_linux_amd64.tar.gz
+        tar -xzf forge_v0.38.0_linux_amd64.tar.gz
+        ./forge version
+
+    - name: Run Validation Run
+      run: |
+        ./forge test-case launch "demo/example-github-actions" --validate --test-case-file="./hello-world.js"
+      env:
+        STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
