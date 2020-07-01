@@ -13,4 +13,5 @@ definition.setTestOptions({
 
 definition.session("hello world", function(session) {
   session.get("/");
+  session.check("mycheck", session.lastHttpStatus(), "<=", 400);
 });
