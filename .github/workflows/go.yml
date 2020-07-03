@@ -61,11 +61,12 @@ jobs:
           --- | ---
           Ref | ${{github.ref}}
           Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
-          Message  | ${{github.event.head_commit.message}}
           Workflow | ${{github.workflow}}
           Run#     | ${{github.run_number}}
           RunID    | ${{github.run_id}}
           Actor    | ${{github.actor}}
+
+          Message: ${{github.event.head_commit.message}}
           "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
@@ -92,11 +93,12 @@ jobs:
           --- | ---
           Ref | ${{github.ref}}
           Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
-          Message  | ${{github.event.head_commit.message}}
           Workflow | ${{github.workflow}}
           Run#     | ${{github.run_number}}
           RunID    | ${{github.run_id}}
           Actor    | ${{github.actor}}
+
+          Message: ${{github.event.head_commit.message}}
         "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
