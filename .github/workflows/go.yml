@@ -77,6 +77,6 @@ jobs:
 
     - name: Run Load-Test
       run: |
-        ./forge test-case launch "demo/example-github-actions" --test-case-file="./hello-world.js"
+        ./forge test-case launch "demo/example-github-actions" --test-case-file="./hello-world.js" --watch
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
