@@ -60,11 +60,12 @@ jobs:
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
           Ref | ${{github.ref}}
-          Sha | ${{github.sha}}
+          Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
+          Message  | ${{github.event.head_commit.message}}
           Workflow | ${{github.workflow}}
-          Run#   | ${{github.run_number}}
-          RunID  | ${{github.run_id}}
-          Actor | ${{github.actor}}
+          Run#     | ${{github.run_number}}
+          RunID    | ${{github.run_id}}
+          Actor    | ${{github.actor}}
           "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
@@ -90,11 +91,12 @@ jobs:
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
           Ref | ${{github.ref}}
-          Sha | ${{github.sha}}
+          Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
+          Message  | ${{github.event.head_commit.message}}
           Workflow | ${{github.workflow}}
-          Run#   | ${{github.run_number}}
-          RunID  | ${{github.run_id}}
-          Actor | ${{github.actor}}
+          Run#     | ${{github.run_number}}
+          RunID    | ${{github.run_id}}
+          Actor    | ${{github.actor}}
         "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
