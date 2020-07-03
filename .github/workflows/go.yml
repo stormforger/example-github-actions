@@ -57,13 +57,14 @@ jobs:
     - name: Run Validation Run
       run: |
         ./forge test-case launch "demo/example-github-actions" --validate --test-case-file="./hello-world.js" \
-          --title="Job=${{github.run_number}} Branch=${{github.ref}}" --notes="Name | Value
+          --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
           Ref | ${{github.ref}}
           Sha | ${{github.sha}}
+          Workflow | ${{github.workflow}}
           Run#   | ${{github.run_number}}
           RunID  | ${{github.run_id}}
-          Sender | ${{github.event.sender.login}}
+          Actor | ${{github.actor}}
           "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
@@ -86,13 +87,14 @@ jobs:
     - name: Run Load-Test
       run: |
         ./forge test-case launch "demo/example-github-actions" --test-case-file="./hello-world.js" --watch \
-        --title="Job=${{github.run_number}} Branch=${{github.ref}}" --notes="Name | Value
-        --- | ---
-        Ref | ${{github.ref}}
-        Sha | ${{github.sha}}
-        Run#   | ${{github.run_number}}
-        RunID  | ${{github.run_id}}
-        Sender | ${{github.event.sender.login}}
+          --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
+          --- | ---
+          Ref | ${{github.ref}}
+          Sha | ${{github.sha}}
+          Workflow | ${{github.workflow}}
+          Run#   | ${{github.run_number}}
+          RunID  | ${{github.run_id}}
+          Actor | ${{github.actor}}
         "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
