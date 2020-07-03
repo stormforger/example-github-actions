@@ -3,6 +3,8 @@
 # Fetch data from target environment (e.g. staging or prod) and export as CSV file for usage in test-run.
 # For this example we just write some example data.
 
+TARGET_ENV="$1"
+
 tee > countries-de.csv <<EOF
 code,name
 de,Germany
