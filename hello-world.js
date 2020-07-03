@@ -2,8 +2,8 @@ definition.setTarget("http://testapp.loadtest.party");
 
 definition.setArrivalPhases([
   {
-    duration: 5 * 60,  // 5min in seconds
-    rate: 1.0,         // clients per second to launch
+    duration: 2 * 60,
+    rate: 1.0,
   },
 ]);
 
