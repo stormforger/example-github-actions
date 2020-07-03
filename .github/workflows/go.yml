@@ -65,7 +65,7 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     # run the deploy pipeline on master only
-    if: github.ref == 'master'
+    if: github.ref == 'refs/heads/master'
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
