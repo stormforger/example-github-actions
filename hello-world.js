@@ -1,3 +1,8 @@
+/*
+ * This file is hosted at https://github.com/stormforger/example-github-actions/
+ * DO NOT EDIT DIRECTLY on app.stormforger.com
+ */
+
 definition.setTarget("http://testapp.loadtest.party");
 
 definition.setArrivalPhases([
