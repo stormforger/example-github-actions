@@ -57,7 +57,15 @@ jobs:
     - name: Run Validation Run
       run: |
         ./forge test-case launch "demo/example-github-actions" --validate --test-case-file="./hello-world.js" \
-          --title="Job=${{ github.job_number }}" --notes="Ref: ${{github.ref}}\nSha: ${{github.sha}}\nRunID: ${{github.run_id}}\nSender: ${{github.event.sender.login}}\n"
+          --title="Job=${{ github.run_number }}" --notes="Ref: ${{github.ref}}
+
+          Sha: ${{github.sha}}
+
+          RunID: ${{github.run_id}}
+
+          Sender: ${{github.event.sender.login}}
+          
+          "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
 
@@ -79,6 +87,6 @@ jobs:
     - name: Run Load-Test
       run: |
         ./forge test-case launch "demo/example-github-actions" --test-case-file="./hello-world.js" --watch \
-          --title="Job=${{ github.job_number }}" --notes="Ref: ${{github.ref}}\nSha: ${{github.sha}}\nRunID: ${{github.run_id}}\nSender: ${{github.event.sender.login}}\n"
+          --title="Job=${{ github.run_number }}" --notes="Ref: ${{github.ref}}\nSha: ${{github.sha}}\nRunID: ${{github.run_id}}\nSender: ${{github.event.sender.login}}\n"
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
