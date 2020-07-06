@@ -15,7 +15,7 @@ if [ ! -r "${loadtest_script}" ]; then
     exit 1
 fi
 
-# Create the loadtest script with a EDIT disclaimer, the environment config and the actual test-script.
+# Create the loadtest script with an DO-NOT-EDIT disclaimer, the environment config and the actual test-script.
 cat - "${loadtest_src}/${target_env}.js" "${loadtest_script}" <<EOF > "${output_path}"
 /*
  * NOTICE: DO NOT EDIT!
