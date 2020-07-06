@@ -24,25 +24,25 @@ definition.session("country-lookup", function(session) {
 
 function visitLandingPage(session, country) {
   session.get("/:country/", {
-    tag: "100-landing",
+    tag: "t100_landing",
     params: {
       country: country.get("code"),
     },
   });
-  session.check("landing", session.lastHttpStatus(), "<=", 400);
+  session.check("c100_landing", session.lastHttpStatus(), "<=", 400);
 }
 
 function login(session) {
   // in this example we just fetch a session token and use that for the rest of the requests
   session.post("/random/get_token", {
-    tag: "200-login",
+    tag: "t200_login",
     extraction: {
       jsonpath: {
         "auth_token": "$.token",
       }
     },
   });
-  session.assert("200-login", session.getVar("auth_token"), "!=", "");
+  session.assert("c200_login", session.getVar("auth_token"), "!=", "");
 
   // Our only shop accepts the auth token in the Authorization header.
   session.setAuthentication({
@@ -53,7 +53,7 @@ function login(session) {
 
 function viewProduct(session, country) {
   session.get("/data/test.json?country=:country", {
-    tag: "300-viewproduct",
+    tag: "t300_viewproduct",
     params: {
       country: country.get("code"),
     },
@@ -68,7 +68,7 @@ function viewProduct(session, country) {
     // productID is not empty
 
     session.get("/?country=:country&product=:product", {
-      tag: "310-viewproduct",
+      tag: "t310_viewproduct",
       abort_on_error: true,
       params: {
         country: country.get("code"),
