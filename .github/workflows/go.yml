@@ -56,6 +56,9 @@ jobs:
 
     - name: Run Validation Run
       run: |
+        ./scripts/data-source.sh "staging" # export test-data
+        ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/staging/" --auto-field-names
+
         ./forge test-case launch "demo/example-github-actions" --validate --test-case-file="./hello-world.js" \
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
@@ -88,6 +91,9 @@ jobs:
 
     - name: Run Load-Test
       run: |
+        ./scripts/data-source.sh "production" # export test-data
+        ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/prod/" --auto-field-names
+
         ./forge test-case launch "demo/example-github-actions" --test-case-file="./hello-world.js" --watch \
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
