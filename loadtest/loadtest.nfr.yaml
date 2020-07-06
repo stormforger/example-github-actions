@@ -1,0 +1,13 @@
+version: "0.1"
+requirements:
+
+# require overall error ratio to be below 0.5%
+- http.error_ratio:
+    test: ["<", 0.005]
+
+# require overall 99th latency percentile to be below 1.5 sec
+- http.latency:
+    select:
+      type: percentile
+      value: 99.0
+    test: ["<=", 1500]
