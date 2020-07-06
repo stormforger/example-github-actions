@@ -45,7 +45,7 @@ function login(session) {
   session.assert("c200_login", session.getVar("auth_token"), "!=", "");
 
   // Our only shop accepts the auth token in the Authorization header.
-  session.setAuthentication({
+  session.defaults.setAuthentication({
     username: "",
     password: session.getVar("auth_token"),
   });
@@ -60,19 +60,18 @@ function viewProduct(session, country) {
     abort_on_error: true,
     extraction: {
       jsonpath: {
-        productID: "$.root.list[0].id",
+        product: "$.root.list[0].id",
       }
     }
   });
-  session.if("productfound", session.getVar("productID"), "!=", "", function(ctx) {
+  session.if(session.getVar("product"), "!=", "", function(ctx) {
     // productID is not empty
-
-    session.get("/?country=:country&product=:product", {
+    ctx.get("/?country=:country&product=:product", {
       tag: "t310_viewproduct",
       abort_on_error: true,
       params: {
         country: country.get("code"),
-        product: session.getVar("productID"),
+        product: session.getVar("product"),
       }
     });
   });
