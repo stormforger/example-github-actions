@@ -34,7 +34,7 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-          
+
     - name: Print Go Version
       run: go version
 
@@ -60,7 +60,7 @@ jobs:
         ./scripts/data-source.sh "staging" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/staging/" --auto-field-names
 
-        ./forge test-case launch "demo/example-github-actions" --validate --test-case-file="/tmp/loadtest.js" \
+        ./forge test-case launch "demo/example-github-actions-staging" --validate --test-case-file="/tmp/loadtest.js" \
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
           Ref | ${{github.ref}}
@@ -96,7 +96,7 @@ jobs:
         ./scripts/data-source.sh "production" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/production/" --auto-field-names
 
-        ./forge test-case launch "demo/example-github-actions" --test-case-file="/tmp/loadtest.js" --nfr-check-file="./loadtest/loadtest.nfr.yaml" \
+        ./forge test-case launch "demo/example-github-actions-production" --test-case-file="/tmp/loadtest.js" --nfr-check-file="./loadtest/loadtest.nfr.yaml" \
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
           Ref | ${{github.ref}}
