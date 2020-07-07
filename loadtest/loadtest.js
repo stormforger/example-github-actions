@@ -1,11 +1,5 @@
-/*
- * This file is hosted at https://github.com/stormforger/example-github-actions/
- * DO NOT EDIT DIRECTLY on app.stormforger.com
- */
-
-const dsPrefix = "example-github-actions/staging/";
-
-definition.setTarget("http://testapp.loadtest.party");
+// NOTE: This file assumes one of {staging,production}.js is available during execution.
+definition.setTarget($host);
 
 definition.setArrivalPhases([
   {
@@ -18,8 +12,8 @@ definition.setTestOptions({
   cluster: { sizing: "preflight", },
 });
 
-definition.session("hello world", function(session) {
-  var countries = session.ds.loadStructured(dsPrefix + "countries-de.csv");
+definition.session("country-lookup", function(session) {
+  var countries = session.ds.loadStructured($dsPrefix + "countries-de.csv");
   var country = session.ds.pickFrom(countries);
 
   session.get("/?country=:country", {
