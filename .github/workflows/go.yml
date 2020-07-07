@@ -48,7 +48,8 @@ jobs:
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-    - name: Install forge CLI
+    - <<: &installcli
+      name: Install forge CLI
       run: |
         wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
         tar -xzf forge_${CLI}_linux_amd64.tar.gz
@@ -56,10 +57,10 @@ jobs:
 
     - name: Run Validation Run
       run: |
-        ./scripts/compile-loadtest.sh "staging" /tmp/loadtest.js
         ./scripts/data-source.sh "staging" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/staging/" --auto-field-names
 
+        ./scripts/compile-loadtest.sh "staging" /tmp/loadtest.js
         ./forge test-case launch "demo/example-github-actions-staging" --validate --test-case-file="/tmp/loadtest.js" \
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
@@ -71,7 +72,7 @@ jobs:
           Actor    | ${{github.actor}}
 
           Message: ${{github.event.head_commit.message}}
-          "
+        "
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
 
@@ -84,18 +85,13 @@ jobs:
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-    - name: Install forge CLI
-      run: |
-        wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
-        tar -xzf forge_${CLI}_linux_amd64.tar.gz
-        ./forge version
-
+    - <<: *installcli
     - name: Run Load-Test
       run: |
-        ./scripts/compile-loadtest.sh "production" /tmp/loadtest.js
         ./scripts/data-source.sh "production" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/production/" --auto-field-names
 
+        ./scripts/compile-loadtest.sh "production" /tmp/loadtest.js
         ./forge test-case launch "demo/example-github-actions-production" --test-case-file="/tmp/loadtest.js" --nfr-check-file="./loadtest/loadtest.nfr.yaml" \
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
