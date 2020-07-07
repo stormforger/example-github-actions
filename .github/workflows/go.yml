@@ -48,22 +48,28 @@ jobs:
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-    - <<: &installcli
-      name: Install forge CLI
+
+    - name: StormForger | Install forge CLI
       run: |
         wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
         tar -xzf forge_${CLI}_linux_amd64.tar.gz
         ./forge version
 
-    - name: Run Validation Run
+    - name: StormForger | Upload data-sources
       run: |
         ./scripts/data-source.sh "staging" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/staging/" --auto-field-names
+      env:
+        STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
 
-        ./scripts/compile-loadtest.sh "staging" /tmp/loadtest.js
-        ./forge test-case launch "demo/example-github-actions-staging" --validate --test-case-file="/tmp/loadtest.js" \
-          --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
-          --- | ---
+    - name: StormForger | Run test-run
+      run: ./scripts/run-loadtest.sh
+      env:
+        INPUT_ENV: "staging"
+        INPUT_LAUNCH_ARGS: "--validate"
+        INPUT_NOTES: |
+          Name | Value
+          ---- | -----
           Ref | ${{github.ref}}
           Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
           Workflow | ${{github.workflow}}
@@ -71,9 +77,9 @@ jobs:
           RunID    | ${{github.run_id}}
           Actor    | ${{github.actor}}
 
-          Message: ${{github.event.head_commit.message}}
-        "
-      env:
+          Message:
+          ${{github.event.head_commit.message}}
+        INPUT_TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
 
   deploy:
@@ -85,16 +91,27 @@ jobs:
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-    - <<: *installcli
-    - name: Run Load-Test
+    - name: StormForger | Install forge CLI
+      run: |
+        wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
+        tar -xzf forge_${CLI}_linux_amd64.tar.gz
+        ./forge version
+
+    - name: StormForger | Upload data-sources
       run: |
         ./scripts/data-source.sh "production" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/production/" --auto-field-names
+      env:
+        STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
 
-        ./scripts/compile-loadtest.sh "production" /tmp/loadtest.js
-        ./forge test-case launch "demo/example-github-actions-production" --test-case-file="/tmp/loadtest.js" --nfr-check-file="./loadtest/loadtest.nfr.yaml" \
-          --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
-          --- | ---
+    - name: StormForger | Run test-run
+      run: ./scripts/run-loadtest.sh
+      env:
+        INPUT_ENV: "production"
+        INPUT_NFR_FILE: "./loadtest/loadtest.nfr.yaml"
+        INPUT_NOTES: |
+          Name | Value
+          ---- | -----
           Ref | ${{github.ref}}
           Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
           Workflow | ${{github.workflow}}
@@ -102,7 +119,7 @@ jobs:
           RunID    | ${{github.run_id}}
           Actor    | ${{github.actor}}
 
-          Message: ${{github.event.head_commit.message}}
-        "
-      env:
+          Message:
+          ${{github.event.head_commit.message}}
+        INPUT_TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
