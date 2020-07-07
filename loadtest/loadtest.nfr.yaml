@@ -1,0 +1,27 @@
+# This file defines non-function requirements for the load-test.
+# The documentation is available at https://docs.stormforger.com/reference/nfr/
+
+version: "0.1"
+requirements:
+
+# require the test-run to finish successfully
+- test.completed: true
+
+# require overall error ratio to be below 0.5%
+- http.error_ratio:
+    test: ["<", 0.005]
+
+# require overall 99th latency percentile to be below 1.5 sec
+- http.latency:
+    select:
+      type: percentile
+      value: 99.0
+    test: ["<=", 1500]
+
+# checks expected to pass
+- checks:
+    select: success_rate
+    where:
+      name:
+      - c100_landing
+      - c200_login

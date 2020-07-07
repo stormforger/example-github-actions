@@ -96,7 +96,7 @@ jobs:
         ./scripts/data-source.sh "production" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/production/" --auto-field-names
 
-        ./forge test-case launch "demo/example-github-actions" --test-case-file="/tmp/loadtest.js" --watch \
+        ./forge test-case launch "demo/example-github-actions" --test-case-file="/tmp/loadtest.js" --nfr-check-file="./loadtest/loadtest.nfr.yaml" \
           --title="${{github.workflow}}#${{github.run_number}} (${{github.ref}})" --notes="Name | Value
           --- | ---
           Ref | ${{github.ref}}
