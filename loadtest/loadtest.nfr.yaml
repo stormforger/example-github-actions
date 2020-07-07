@@ -1,9 +1,7 @@
 # This file defines non-function requirements for the load-test.
 # The documentation is available at https://docs.stormforger.com/reference/nfr/
-
 version: "0.1"
 requirements:
-
 # require the test-run to finish successfully
 - test.completed: true
 
@@ -18,10 +16,11 @@ requirements:
       value: 99.0
     test: ["<=", 1500]
 
-# checks expected to pass
+#  checks expected to pass
 - checks:
     select: success_rate
     where:
       name:
       - c100_landing
       - c200_login
+    test: ["=", 1]
