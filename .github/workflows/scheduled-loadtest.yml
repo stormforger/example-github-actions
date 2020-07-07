@@ -1,0 +1,49 @@
+name: Scheduled Loadtest
+
+on:
+  schedule:
+    # Do a run every sunday night
+    - cron: 12 5 * * 0
+
+env:
+  CLI: "v0.38.0"
+
+jobs:
+  loadtest:
+    name: "Load-Test (Production)"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+    - name: StormForger | Install forge CLI
+      run: |
+        wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
+        tar -xzf forge_${CLI}_linux_amd64.tar.gz
+        ./forge version
+
+    - name: StormForger | Upload data-sources
+      run: |
+        ./scripts/data-source.sh "production" # export test-data
+        ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/production/" --auto-field-names
+      env:
+        STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
+
+    - name: StormForger | Run test-run
+      run: ./scripts/run-loadtest.sh
+      env:
+        INPUT_ENV: "production"
+        INPUT_NFR_FILE: "./loadtest/loadtest.nfr.yaml"
+        INPUT_NOTES: |
+          Name | Value
+          ---- | -----
+          Ref | ${{github.ref}}
+          Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
+          Workflow | ${{github.workflow}}
+          Run#     | ${{github.run_number}}
+          RunID    | ${{github.run_id}}
+          Actor    | ${{github.actor}}
+
+          Message:
+          ${{github.event.head_commit.message}}
+        INPUT_TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
+        STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
