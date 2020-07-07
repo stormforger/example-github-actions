@@ -12,6 +12,6 @@ func main() {
 	r := mux.NewRouter()
 	server.RegisterStaticHandler(r)
 
-	fmt.Println("Hello World!")
+	fmt.Println("example-github-actions server running on :8080")
 	http.ListenAndServe(":8080", r)
 }
