@@ -23,15 +23,16 @@ jobs:
 
     - name: StormForger | Upload data-sources
       run: |
-        ./scripts/data-source.sh "production" # export test-data
-        ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/production/" --auto-field-names
+        ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
+        ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
       env:
         STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
+        TARGET_ENV: "production"
 
     - name: StormForger | Run test-run
       run: ./scripts/run-loadtest.sh
       env:
-        INPUT_ENV: "production"
+        TARGET_ENV: "production"
         INPUT_NFR_FILE: "./loadtest/loadtest.nfr.yaml"
         INPUT_NOTES: |
           Name | Value
