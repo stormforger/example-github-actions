@@ -52,7 +52,7 @@ jobs:
       run: |
         wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
         tar -xzf forge_${CLI}_linux_amd64.tar.gz
-        ./forge version
+        ./forge ping
 
     - name: StormForger | Upload data-sources
       run: |
@@ -97,7 +97,7 @@ jobs:
       run: |
         wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
         tar -xzf forge_${CLI}_linux_amd64.tar.gz
-        ./forge version
+        ./forge ping
 
     - name: StormForger | Upload data-sources
       run: |
