@@ -42,6 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TARGET_ENV: "staging"
+      TESTCASE: "demo/${{ github.repository.name }}-staging"
       STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
     steps:
     - name: Check out code into the Go module directory
@@ -59,22 +60,25 @@ jobs:
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
 
     - name: StormForger | Run test-run
-      run: ./scripts/run-loadtest.sh
+      run: |
+        ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
+        ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
+          --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
       env:
-        INPUT_LAUNCH_ARGS: "--validate"
-        INPUT_NOTES: |
+        LAUNCH_ARGS: "--validate"
+        NOTES: |
           Name | Value
           ---- | -----
           Ref | ${{github.ref}}
           Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
           Workflow | ${{github.workflow}}
           Run#     | ${{github.run_number}}
-          RunID    | ${{github.run_id}}
+          RunID    | [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}})
           Actor    | ${{github.actor}}
 
           Message:
           ${{github.event.head_commit.message}}
-        INPUT_TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
+        TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
 
   deploy:
     name: "Deploy (Production)"
@@ -82,6 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TARGET_ENV: "production"
+      TESTCASE: "demo/${{ github.repository.name }}-production"
       STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
     # run the deploy pipeline on master only
     if: github.ref == 'refs/heads/master'
@@ -100,19 +105,22 @@ jobs:
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
 
     - name: StormForger | Run test-run
-      run: ./scripts/run-loadtest.sh
+      run: |
+        ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
+        ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
+          --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
       env:
-        INPUT_NFR_FILE: "./loadtest/loadtest.nfr.yaml"
-        INPUT_NOTES: |
+        LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
+        NOTES: |
           Name | Value
           ---- | -----
           Ref | ${{github.ref}}
           Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
           Workflow | ${{github.workflow}}
           Run#     | ${{github.run_number}}
-          RunID    | ${{github.run_id}}
+          RunID    | [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}})
           Actor    | ${{github.actor}}
 
           Message:
           ${{github.event.head_commit.message}}
-        INPUT_TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
+        TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
