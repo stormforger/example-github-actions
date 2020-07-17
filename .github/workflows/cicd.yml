@@ -59,7 +59,7 @@ jobs:
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
 
-    - name: StormForger | Run test-run
+    - name: StormForger | Launch test-run
       run: |
         ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
         ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
@@ -104,7 +104,7 @@ jobs:
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
 
-    - name: StormForger | Run test-run
+    - name: StormForger | Launch test-run
       run: |
         ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
         ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
