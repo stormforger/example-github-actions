@@ -12,6 +12,9 @@ jobs:
   loadtest:
     name: "Load-Test (Production)"
     runs-on: ubuntu-latest
+    env:
+      TARGET_ENV: "staging"
+      STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
@@ -25,14 +28,10 @@ jobs:
       run: |
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
-      env:
-        STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
-        TARGET_ENV: "production"
 
     - name: StormForger | Run test-run
       run: ./scripts/run-loadtest.sh
       env:
-        TARGET_ENV: "production"
         INPUT_NFR_FILE: "./loadtest/loadtest.nfr.yaml"
         INPUT_NOTES: |
           Name | Value
@@ -47,4 +46,3 @@ jobs:
           Message:
           ${{github.event.head_commit.message}}
         INPUT_TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
-        STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
