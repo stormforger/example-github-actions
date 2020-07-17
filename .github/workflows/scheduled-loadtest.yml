@@ -1,0 +1,53 @@
+name: Scheduled Loadtest
+
+on:
+  schedule:
+    # Do a run every sunday night
+    - cron: 12 5 * * 0
+
+env:
+  CLI: "v0.38.0"
+
+jobs:
+  loadtest:
+    name: "Load-Test (Production)"
+    runs-on: ubuntu-latest
+    env:
+      TARGET_ENV: "production"
+      TESTCASE: "demo/${{ github.event.repository.name }}-production"
+      STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: StormForger | Install forge CLI
+      run: |
+        wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
+        tar -xzf forge_${CLI}_linux_amd64.tar.gz
+        ./forge ping
+
+    - name: StormForger | Upload data-sources
+      run: |
+        ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
+        ./forge datasource push demo *.csv --name-prefix-path="${{ github.event.repository.name }}/${TARGET_ENV}/" --auto-field-names
+
+    - name: StormForger | Launch test-run
+      run: |
+        ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
+        ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
+          --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
+      env:
+        LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
+        NOTES: |
+          Name | Value
+          ---- | -----
+          Ref | ${{github.ref}}
+          Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
+          Workflow | ${{github.workflow}}
+          Run#     | ${{github.run_number}}
+          RunID    | [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}})
+          Actor    | ${{github.actor}}
+
+          Message:
+          ${{github.event.head_commit.message}}
+        TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
