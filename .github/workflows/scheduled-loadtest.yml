@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TARGET_ENV: "production"
+      TESTCASE: "demo/${{ github.event.repository.name }}-production"
       STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
-      TESTCASE: "demo/${{ github.repository.name }}-production"
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2

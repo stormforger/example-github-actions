@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TARGET_ENV: "staging"
-      TESTCASE: "demo/${{ github.repository.name }}-staging"
+      TESTCASE: "demo/${{ github.event.repository.name }}-staging"
       STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
     steps:
     - name: Check out code into the Go module directory
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TARGET_ENV: "production"
-      TESTCASE: "demo/${{ github.repository.name }}-production"
+      TESTCASE: "demo/${{ github.event.repository.name }}-production"
       STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
     # run the deploy pipeline on master only
     if: github.ref == 'refs/heads/master'
