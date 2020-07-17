@@ -57,7 +57,7 @@ jobs:
     - name: StormForger | Upload data-sources
       run: |
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
-        ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
+        ./forge datasource push demo *.csv --name-prefix-path="${{ github.event.repository.name }}/${TARGET_ENV}/" --auto-field-names
 
     - name: StormForger | Launch test-run
       run: |
@@ -102,7 +102,7 @@ jobs:
     - name: StormForger | Upload data-sources
       run: |
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
-        ./forge datasource push demo *.csv --name-prefix-path="example-github-actions/${TARGET_ENV}/" --auto-field-names
+        ./forge datasource push demo *.csv --name-prefix-path="${{ github.event.repository.name }}/${TARGET_ENV}/" --auto-field-names
 
     - name: StormForger | Launch test-run
       run: |
