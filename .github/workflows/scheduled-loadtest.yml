@@ -3,7 +3,8 @@ name: Scheduled Loadtest
 on:
   schedule:
     # Do a run every sunday night
-    - cron: 12 5 * * 0
+    # - cron: 12 5 * * 0
+    - cron: "*/5 * * * *"
 
 env:
   CLI: "v0.38.0"
@@ -14,11 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TARGET_ENV: "production"
-      TESTCASE: "demo/${{ github.event.repository.name }}-production"
       STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
+
+    # Note: we need to manually extract the repository name (w/o the orga),
+    # since the github scheduled event does not bring the repository subobject.
+    - name: StormForger | Extract repository name
+      id: repository
+      run: |
+        repo=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+        echo "::set-env name=DATASOURCE_PREFIX::${repo}"
+        echo "::set-env name=TESTCASE::demo/${repo}-${TARGET_ENV}"
 
     - name: StormForger | Install forge CLI
       run: |
@@ -29,7 +38,7 @@ jobs:
     - name: StormForger | Upload data-sources
       run: |
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
-        ./forge datasource push demo *.csv --name-prefix-path="${{ github.event.repository.name }}/${TARGET_ENV}/" --auto-field-names
+        ./forge datasource push demo *.csv --name-prefix-path="${DATASOURCE_PREFIX}" --auto-field-names
 
     - name: StormForger | Launch test-run
       run: |
