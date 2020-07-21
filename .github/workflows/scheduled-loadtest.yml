@@ -3,7 +3,8 @@ name: Scheduled Loadtest
 on:
   schedule:
     # Do a run every sunday night
-    - cron: 12 5 * * 0
+    # - cron: 12 5 * * 0
+    - cron: "*/5 * * * *"
 
 env:
   CLI: "v0.38.0"
@@ -25,8 +26,8 @@ jobs:
       id: repository
       run: |
         repo=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-        echo "::set-output name=datasource-prefix::${repo}"
-        echo "::set-output name=testcase::demo/${repo}-${TARGET_ENV}"
+        echo "::set-env name=DATASOURCE_PREFIX::${repo}"
+        echo "::set-env name=TESTCASE::demo/${repo}-${TARGET_ENV}"
 
     - name: StormForger | Install forge CLI
       run: |
@@ -37,12 +38,12 @@ jobs:
     - name: StormForger | Upload data-sources
       run: |
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
-        ./forge datasource push demo *.csv --name-prefix-path="${{ steps.repository.outputs.datasource-prefix }}" --auto-field-names
+        ./forge datasource push demo *.csv --name-prefix-path="${DATASOURCE_PREFIX}" --auto-field-names
 
     - name: StormForger | Launch test-run
       run: |
         ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
-        ./forge test-case launch "${{ steps.repository.outputs.testcase }}" --test-case-file="/tmp/testcase.js" \
+        ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
           --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
       env:
         LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
