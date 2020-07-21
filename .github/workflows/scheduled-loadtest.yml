@@ -3,11 +3,10 @@ name: Scheduled Loadtest
 on:
   schedule:
     # Do a run every sunday night
-    # - cron: 12 5 * * 0
-    - cron: "*/5 * * * *"
+    - cron: 12 5 * * 0
 
 env:
-  CLI: "v0.38.0"
+  CLI: "v0.38.1"
 
 jobs:
   loadtest:
