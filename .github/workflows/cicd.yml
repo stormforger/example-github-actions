@@ -5,7 +5,7 @@ on: push
 env:
   # rewrite go env GOCACHE to something well known so we can use actions/cache with it
   GOCACHE: "/home/runner/go/cache"
-  CLI: "v0.38.0"
+  CLI: "v0.40.1"
 
 jobs:
   build:

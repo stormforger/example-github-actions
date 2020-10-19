@@ -6,7 +6,7 @@ on:
     - cron: 12 5 * * 0
 
 env:
-  CLI: "v0.38.1"
+  CLI: "v0.40.1"
 
 jobs:
   loadtest:
