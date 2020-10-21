@@ -5,7 +5,6 @@ on: push
 env:
   # rewrite go env GOCACHE to something well known so we can use actions/cache with it
   GOCACHE: "/home/runner/go/cache"
-  CLI: "v0.40.1"
 
 jobs:
   build:
@@ -50,8 +49,8 @@ jobs:
 
     - name: StormForger | Install forge CLI
       run: |
-        wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
-        tar -xzf forge_${CLI}_linux_amd64.tar.gz
+        wget https://app.stormforger.com/download/cli/linux -O forge_linux_amd64.tar.gz
+        tar -xzf forge_linux_amd64.tar.gz
         ./forge ping
 
     - name: StormForger | Upload data-sources
@@ -95,8 +94,8 @@ jobs:
       uses: actions/checkout@v2
     - name: StormForger | Install forge CLI
       run: |
-        wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
-        tar -xzf forge_${CLI}_linux_amd64.tar.gz
+        wget https://app.stormforger.com/download/cli/linux -O forge_linux_amd64.tar.gz
+        tar -xzf forge_linux_amd64.tar.gz
         ./forge ping
 
     - name: StormForger | Upload data-sources
