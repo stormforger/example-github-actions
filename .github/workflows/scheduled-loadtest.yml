@@ -5,9 +5,6 @@ on:
     # Do a run every sunday night
     - cron: 12 5 * * 0
 
-env:
-  CLI: "v0.40.1"
-
 jobs:
   loadtest:
     name: "Load-Test (Production)"
@@ -30,8 +27,8 @@ jobs:
 
     - name: StormForger | Install forge CLI
       run: |
-        wget https://github.com/stormforger/cli/releases/download/${CLI}/forge_${CLI}_linux_amd64.tar.gz
-        tar -xzf forge_${CLI}_linux_amd64.tar.gz
+        wget https://app.stormforger.com/download/cli/linux -O forge_linux_amd64.tar.gz
+        tar -xzf forge_linux_amd64.tar.gz
         ./forge ping
 
     - name: StormForger | Upload data-sources
