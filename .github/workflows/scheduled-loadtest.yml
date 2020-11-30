@@ -22,8 +22,7 @@ jobs:
       id: repository
       run: |
         repo=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-        echo "::set-env name=DATASOURCE_PREFIX::${repo}"
-        echo "::set-env name=TESTCASE::demo/${repo}-${TARGET_ENV}"
+        echo "::set-output name=name::${repo}"
 
     - name: StormForger | Install forge CLI
       run: |
@@ -35,6 +34,8 @@ jobs:
       run: |
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="${DATASOURCE_PREFIX}" --auto-field-names
+      env:
+        DATASOURCE_PREFIX: "${{steps.repository.outputs.name}}"
 
     - name: StormForger | Launch test-run
       run: |
@@ -42,6 +43,7 @@ jobs:
         ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
           --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
       env:
+        TESTCASE: "demo/${{steps.repository.outputs.name}}-${TARGET_ENV}"
         LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
         NOTES: |
           Name | Value
