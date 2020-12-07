@@ -10,7 +10,6 @@ jobs:
     name: "Load-Test (Production)"
     runs-on: ubuntu-latest
     env:
-      TARGET_ENV: "production"
       STORMFORGER_JWT: ${{ secrets.STORMFORGER_JWT }}
     steps:
     - name: Check out code into the Go module directory
@@ -18,11 +17,12 @@ jobs:
 
     # Note: we need to manually extract the repository name (w/o the orga),
     # since the github scheduled event does not bring the repository subobject.
-    - name: StormForger | Extract repository name
-      id: repository
+    - name: StormForger | Setup variables
+      id: config
       run: |
         repo=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-        echo "::set-output name=name::${repo}"
+        echo "::set-output name=repository::${repo}"
+        echo "::set-output name=target_env::production"
 
     - name: StormForger | Install forge CLI
       run: |
@@ -35,7 +35,8 @@ jobs:
         ./scripts/data-source.sh "${TARGET_ENV}" # export test-data
         ./forge datasource push demo *.csv --name-prefix-path="${DATASOURCE_PREFIX}" --auto-field-names
       env:
-        DATASOURCE_PREFIX: "${{steps.repository.outputs.name}}"
+        DATASOURCE_PREFIX: "${{steps.config.outputs.repository}}"
+        TARGET_ENV: "${{steps.config.outputs.target_env}}"
 
     - name: StormForger | Launch test-run
       run: |
@@ -43,7 +44,8 @@ jobs:
         ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
           --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
       env:
-        TESTCASE: "demo/${{steps.repository.outputs.name}}-${TARGET_ENV}"
+        TARGET_ENV: "${{steps.config.outputs.target_env}}"
+        TESTCASE: "demo/${{steps.config.outputs.repository}}-${{steps.config.outputs.target_env}}"
         LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
         NOTES: |
           Name | Value
