@@ -60,8 +60,8 @@ jobs:
 
     - name: StormForger | Launch test-run
       run: |
-        ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
-        ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
+        ./forge test-case launch "${TESTCASE}" --test-case-file="./loadtest/loadtest.mjs" \
+          --define ENV=\"${TARGET_ENV}\" \
           --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
       env:
         LAUNCH_ARGS: "--validate"
@@ -105,8 +105,8 @@ jobs:
 
     - name: StormForger | Launch test-run
       run: |
-        ./scripts/compile-loadtest.sh "${TARGET_ENV}" "/tmp/testcase.js"
-        ./forge test-case launch "${TESTCASE}" --test-case-file="/tmp/testcase.js" \
+        ./forge test-case launch "${TESTCASE}" --test-case-file="./loadtest/loadtest.mjs" \
+          --define ENV=\"${TARGET_ENV}\" \
           --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
       env:
         LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
