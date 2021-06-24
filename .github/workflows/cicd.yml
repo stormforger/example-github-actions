@@ -64,8 +64,8 @@ jobs:
           --define ENV=\"${TARGET_ENV}\" \
           --title="${TITLE}" --notes="${NOTES}" \
           --label=git-ref=${{github.ref}} \
+          --label=gh-commit=${{github.event.head_commit.url}} \
           --label=gh-workflow=${{github.workflow}} \
-          --label=gh-run-no=${{github.run_number}} \
           --label=gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}} \
           --label=gh-actor=${{github.actor}} \
             ${LAUNCH_ARGS}
@@ -106,8 +106,8 @@ jobs:
           --define ENV=\"${TARGET_ENV}\" \
           --title="${TITLE}" --notes="${NOTES}" \
           --label=git-ref=${{github.ref}} \
+          --label=gh-commit=${{github.event.head_commit.url}} \
           --label=gh-workflow=${{github.workflow}} \
-          --label=gh-run-no=${{github.run_number}} \
           --label=gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}} \
           --label=gh-actor=${{github.actor}} \
             ${LAUNCH_ARGS}
