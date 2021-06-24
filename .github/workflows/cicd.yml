@@ -62,20 +62,17 @@ jobs:
       run: |
         ./forge test-case launch "${TESTCASE}" --test-case-file="./loadtest/loadtest.mjs" \
           --define ENV=\"${TARGET_ENV}\" \
-          --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
+          --title="${TITLE}" --notes="${NOTES}" \
+          --label=git-ref=${{github.ref}} \
+          --label=gh-workflow=${{github.workflow}} \
+          --label=gh-run-no=${{github.run_number}} \
+          --label=gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}} \
+          --label=gh-actor=${{github.actor}} \
+            ${LAUNCH_ARGS}
       env:
         LAUNCH_ARGS: "--validate"
         NOTES: |
-          Name | Value
-          ---- | -----
-          Ref | ${{github.ref}}
-          Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
-          Workflow | ${{github.workflow}}
-          Run#     | ${{github.run_number}}
-          RunID    | [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}})
-          Actor    | ${{github.actor}}
-
-          Message:
+          Head Commit Message:
           ${{github.event.head_commit.message}}
         TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
 
@@ -107,19 +104,16 @@ jobs:
       run: |
         ./forge test-case launch "${TESTCASE}" --test-case-file="./loadtest/loadtest.mjs" \
           --define ENV=\"${TARGET_ENV}\" \
-          --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
+          --title="${TITLE}" --notes="${NOTES}" \
+          --label=git-ref=${{github.ref}} \
+          --label=gh-workflow=${{github.workflow}} \
+          --label=gh-run-no=${{github.run_number}} \
+          --label=gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}} \
+          --label=gh-actor=${{github.actor}} \
+            ${LAUNCH_ARGS}
       env:
         LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
         NOTES: |
-          Name | Value
-          ---- | -----
-          Ref | ${{github.ref}}
-          Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
-          Workflow | ${{github.workflow}}
-          Run#     | ${{github.run_number}}
-          RunID    | [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}})
-          Actor    | ${{github.actor}}
-
-          Message:
+          Head Commit Message:
           ${{github.event.head_commit.message}}
         TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
