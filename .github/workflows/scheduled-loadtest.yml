@@ -1,6 +1,7 @@
 name: Scheduled Loadtest
 
 on:
+  workflow_dispatch:
   schedule:
     # Do a run every sunday night
     - cron: 12 5 * * 0
@@ -42,21 +43,18 @@ jobs:
       run: |
         ./forge test-case launch "${TESTCASE}" --test-case-file="loadtest/loadtest.mjs" \
           --define ENV=\"${TARGET_ENV}\" \
-          --title="${TITLE}" --notes="${NOTES}" ${LAUNCH_ARGS}
+          --title="${TITLE}" --notes="${NOTES}" \
+          --label=git-ref=${{github.ref}} \
+          --label=gh-commit=${{github.event.head_commit.url}} \
+          --label=gh-workflow=${{github.workflow}} \
+          --label=gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}} \
+          --label=gh-actor=${{github.actor}} \
+            ${LAUNCH_ARGS}
       env:
         TARGET_ENV: "${{steps.config.outputs.target_env}}"
         TESTCASE: "demo/${{steps.config.outputs.repository}}-${{steps.config.outputs.target_env}}"
         LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
         NOTES: |
-          Name | Value
-          ---- | -----
-          Ref | ${{github.ref}}
-          Sha | [${{github.event.head_commit.id}}](${{github.event.head_commit.url}})
-          Workflow | ${{github.workflow}}
-          Run#     | ${{github.run_number}}
-          RunID    | [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}})
-          Actor    | ${{github.actor}}
-
-          Message:
+          Head Commit Message:
           ${{github.event.head_commit.message}}
         TITLE: "${{github.workflow}}#${{github.run_number}} (${{github.ref}})"
