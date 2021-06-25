@@ -1,6 +1,7 @@
 name: Scheduled Loadtest
 
 on:
+  workflow_dispatch:
   schedule:
     # Do a run every sunday night
     - cron: 12 5 * * 0
