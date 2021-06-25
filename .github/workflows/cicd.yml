@@ -63,11 +63,11 @@ jobs:
         ./forge test-case launch "${TESTCASE}" --test-case-file="./loadtest/loadtest.mjs" \
           --define ENV=\"${TARGET_ENV}\" \
           --title="${TITLE}" --notes="${NOTES}" \
-          --label=git-ref=${{github.ref}} \
-          --label=gh-commit=${{github.event.head_commit.url}} \
-          --label=gh-workflow=${{github.workflow}} \
-          --label=gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}} \
-          --label=gh-actor=${{github.actor}} \
+          --label="git-ref=${{github.ref}}" \
+          --label="gh-commit=${{github.event.head_commit.url}}" \
+          --label="gh-workflow=${{github.workflow}}" \
+          --label="gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}" \
+          --label="gh-actor=${{github.actor}}" \
             ${LAUNCH_ARGS}
       env:
         LAUNCH_ARGS: "--validate"
@@ -105,11 +105,11 @@ jobs:
         ./forge test-case launch "${TESTCASE}" --test-case-file="./loadtest/loadtest.mjs" \
           --define ENV=\"${TARGET_ENV}\" \
           --title="${TITLE}" --notes="${NOTES}" \
-          --label=git-ref=${{github.ref}} \
-          --label=gh-commit=${{github.event.head_commit.url}} \
-          --label=gh-workflow=${{github.workflow}} \
-          --label=gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}} \
-          --label=gh-actor=${{github.actor}} \
+          --label="git-ref=${{github.ref}}" \
+          --label="gh-commit=${{github.event.head_commit.url}}" \
+          --label="gh-workflow=${{github.workflow}}" \
+          --label="gh-run-url=https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}" \
+          --label="gh-actor=${{github.actor}}" \
             ${LAUNCH_ARGS}
       env:
         LAUNCH_ARGS: "--nfr-check-file=./loadtest/loadtest.nfr.yaml"
