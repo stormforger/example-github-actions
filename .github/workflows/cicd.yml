@@ -24,7 +24,7 @@ jobs:
         path: |
           ~/go/pkg/mod
           ~/go/src
-          /hone/runner/go/cache
+          /home/runner/go/cache
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
