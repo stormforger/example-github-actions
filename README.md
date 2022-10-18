@@ -1,4 +1,4 @@
-*NOTE:* This repository has been replaced with a new version at [thestormforge/perftest-example-github-actions](https://github.com/thestormforge/perftest-example-github-actions) using the unified [CLI](https://docs.stormforge.io/stormforge-cli/) for all StormForge products.
+**NOTE:** This repository has been replaced with a new version at [thestormforge/perftest-example-github-actions](https://github.com/thestormforge/perftest-example-github-actions) using the unified [CLI](https://docs.stormforge.io/stormforge-cli/) for all StormForge products.
 
 # example-github-actions
 
